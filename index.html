@@ -40,7 +40,7 @@ nav a:hover{color:#fff;}
 .hdr-btn{background:#111;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.85rem;transition:0.25s;font-family:'DM Sans',sans-serif;}
 .hdr-btn:hover{background:#333;}
 
-/* ── TYPEWRITER HERO ── */
+
 .hero{
   min-height:90vh;
   background:linear-gradient(150deg,rgba(0,0,0,0.75) 0%,rgba(100,98,96,0.35) 100%),url('Background-1.jpg') center/cover no-repeat;
@@ -112,7 +112,7 @@ nav a:hover{color:#fff;}
 .modal-btn.danger:hover{background:#b01010;}
 .divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:16px 0;}
 
-/* ── ADMIN ── */
+
 .admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;z-index:3000;flex-direction:row;}
 .admin-overlay.open{display:flex;}
 .admin-sidebar{width:220px;background:#111;padding:24px 16px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
@@ -126,7 +126,7 @@ nav a:hover{color:#fff;}
 .admin-pane{display:none;}
 .admin-pane.active{display:block;}
 
-/* ── UPLOAD ── */
+
 .upload-area{border:2px dashed rgba(255,255,255,0.15);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:0.25s;background:#111;}
 .upload-area:hover,.upload-area.drag{border-color:var(--orange);background:rgba(233,98,7,0.07);}
 .upload-area p{color:#666;font-size:0.9rem;margin-top:8px;}
@@ -135,7 +135,7 @@ nav a:hover{color:#fff;}
 .upload-preview img:hover{border-color:var(--red);}
 .upload-preview img.main-img{border-color:var(--orange);}
 
-/* ── PRODUCT TABLE ── */
+
 .prod-table{width:100%;border-collapse:collapse;margin-top:8px;}
 .prod-table th{background:#111;color:#888;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.5px;padding:10px 14px;text-align:left;}
 .prod-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.05);color:#ddd;font-size:0.88rem;vertical-align:middle;}
@@ -148,7 +148,7 @@ nav a:hover{color:#fff;}
 .tbl-btn.del{background:rgba(224,25,25,0.15);color:var(--red);}
 .tbl-btn.del:hover{background:var(--red);color:#fff;}
 
-/* ── ORDERS ── */
+
 .order-card{background:#111;border-radius:14px;padding:16px;margin-bottom:12px;}
 .order-card h4{font-size:0.95rem;color:#fff;margin-bottom:6px;}
 .order-card p{font-size:0.85rem;color:#aaa;margin:2px 0;}
@@ -158,7 +158,7 @@ nav a:hover{color:#fff;}
 .o-btn.deliver{background:var(--green);color:#fff;}
 .o-btn.del{background:var(--red);color:#fff;}
 
-/* ── CART ── */
+
 .cart-item{display:flex;gap:12px;align-items:center;background:#111;padding:12px;border-radius:12px;margin-bottom:10px;}
 .cart-item img{width:62px;height:62px;object-fit:cover;border-radius:8px;flex-shrink:0;}
 .cart-item-info{flex:1;}
@@ -177,7 +177,7 @@ nav a:hover{color:#fff;}
 .order-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--orange);background:#111;border-radius:14px;padding:20px;margin:16px 0;letter-spacing:3px;}
 .order-success p{color:#aaa;font-size:0.9rem;line-height:1.6;}
 
-/* ── EDIT IMG GRID ── */
+
 .edit-img-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
 .edit-img-wrap{position:relative;width:82px;height:82px;flex-shrink:0;}
 .edit-img-wrap img{width:100%;height:100%;object-fit:cover;border-radius:10px;border:2px solid rgba(255,255,255,0.12);}
@@ -260,12 +260,12 @@ footer p{font-size:0.88rem;margin:4px 0;}
   <p style="margin-top:12px;font-size:0.75rem;color:#aaa;">Web by <a href="https://wa.me/27730891813" style="color:var(--orange);text-decoration:none;font-weight:600;">Bright (+27 73 089 1813)</a></p>
 </footer>
 
-<!-- ZOOM -->
+
 <div class="overlay" id="zoomOverlay" onclick="closeZoom()">
   <img id="zoomedImage" style="max-width:90%;max-height:88vh;border-radius:16px;">
 </div>
 
-<!-- CART -->
+
 <div class="overlay" id="cartOverlay">
   <div class="popup" style="max-width:500px;">
     <button class="close-x" onclick="closeCart()">✕</button>
@@ -294,7 +294,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
   </div>
 </div>
 
-<!-- AUTH -->
+
 <div class="overlay" id="authOverlay">
   <div class="popup">
     <button class="close-x" onclick="closeAuth()">✕</button>
@@ -307,7 +307,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
   </div>
 </div>
 
-<!-- ACCOUNT -->
+
 <div class="overlay" id="accountOverlay">
   <div class="popup">
     <button class="close-x" onclick="closeAccount()">✕</button>
@@ -318,7 +318,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
   </div>
 </div>
 
-<!-- ORDER SUCCESS -->
+
 <div class="overlay" id="successOverlay">
   <div class="popup" style="max-width:400px;">
     <button class="close-x" onclick="closeSuccess()">✕</button>
@@ -333,7 +333,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
   </div>
 </div>
 
-<!-- ADMIN LOGIN -->
+
 <div class="overlay" id="adminLoginOverlay">
   <div class="popup" style="max-width:400px;">
     <button class="close-x" onclick="closeAdminLogin()">✕</button>
@@ -344,7 +344,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
   </div>
 </div>
 
-<!-- EDIT PRODUCT -->
+
 <div class="overlay" id="editOverlay">
   <div class="popup" style="max-width:520px;">
     <button class="close-x" onclick="closeEdit()">✕</button>
@@ -373,7 +373,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
+
 <div class="admin-overlay" id="adminPanel">
   <div class="admin-sidebar">
     <div class="logo" style="color:var(--orange);">STP ADMIN</div>
@@ -441,13 +441,13 @@ footer p{font-size:0.88rem;margin:4px 0;}
 <div id="toast"></div>
 
 <script>
-// ══ EMAILJS ══
+
 const EMAILJS_PUBLIC_KEY  = 'DeXhysHa1MBcmF6-w';
 const EMAILJS_SERVICE_ID  = 'service_eai5wsd';
 const EMAILJS_TEMPLATE_ID = 'template_wrdjvme';
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
-// ══ STATE ══
+
 let cart = [];
 let users       = JSON.parse(localStorage.getItem('stp_users'))    || [];
 let orders      = JSON.parse(localStorage.getItem('stp_orders'))   || [];
@@ -464,10 +464,10 @@ const DEFAULT_PRODUCTS = [
 ];
 let products = JSON.parse(localStorage.getItem('stp_products')) || DEFAULT_PRODUCTS;
 
-// ══ SAVE ══
+
 function saveProducts(){ localStorage.setItem('stp_products', JSON.stringify(products)); }
 
-// ══ RENDER PRODUCTS ══
+
 function renderProducts(){
   const c = document.getElementById('productsContainer');
   c.innerHTML = '';
@@ -499,7 +499,7 @@ function renderProducts(){
   createDots();
 }
 
-// ══ PRODUCT TABLE ══
+
 function renderProductTable(){
   const body = document.getElementById('productTableBody');
   body.innerHTML = '';
@@ -521,7 +521,7 @@ function renderProductTable(){
   });
 }
 
-// ══ ADD PRODUCT (image upload) ══
+
 function handleFiles(files){
   Array.from(files).forEach(file => {
     const reader = new FileReader();
@@ -565,7 +565,7 @@ function addProduct(){
   showAdminTab('products', document.querySelectorAll('.admin-tab')[0]);
 }
 
-// ══ EDIT PRODUCT ══
+
 let editImages = [];
 function renderEditImgGrid(){
   const grid = document.getElementById('editImgGrid');
@@ -627,7 +627,7 @@ function deleteProduct(i){
   showToast('Product deleted');
 }
 
-// ══ CART ══
+
 function addToCart(i){
   const p = products[i];
   cart.push({name:p.name, price:p.price, image:p.images[0]||''});
@@ -647,7 +647,7 @@ function renderCart(){
 function removeItem(i){ cart.splice(i,1); updateCartCount(); renderCart(); }
 function showBankDetails(){ document.getElementById('bankDetails').style.display = document.getElementById('paymentMethod').value==='Bank Transfer'?'block':'none'; }
 
-// ══ CHECKOUT ══
+
 async function checkout(){
   if(!currentUser){ showToast('Please login first'); closeCart(); openAuth(); return; }
   if(!cart.length){ showToast('Cart is empty'); return; }
@@ -672,7 +672,7 @@ async function checkout(){
   } catch(e){}
 
   const itemsMsg = cart.map(i=>`${i.name} - R${i.price}`).join('%0A');
-  window.open(`https://wa.me/27730891813?text=🔥 NEW ORDER%0AOrder: ${orderNum}%0ACustomer: ${currentUser.email}%0APhone: ${order.phone}%0AAddress: ${address}%0APayment: ${payment}%0A%0AItems:%0A${itemsMsg}`, '_blank');
+  window.open(`https://wa.me/27661533822?text=🔥 NEW ORDER%0AOrder: ${orderNum}%0ACustomer: ${currentUser.email}%0APhone: ${order.phone}%0AAddress: ${address}%0APayment: ${payment}%0A%0AItems:%0A${itemsMsg}`, '_blank');
 
   cart=[]; updateCartCount(); closeCart();
   document.getElementById('successOrderNum').innerText = orderNum;
@@ -680,7 +680,7 @@ async function checkout(){
   loadCustomerOrders(); loadAdminOrders();
 }
 
-// ══ AUTH ══
+
 function signup(){
   const email    = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
@@ -714,7 +714,7 @@ function updateLoginBtn(){
   else { btn.textContent='Login'; btn.onclick=openAuth; }
 }
 
-// ══ ORDERS ══
+
 function loadCustomerOrders(){
   const c = document.getElementById('customerOrders');
   c.innerHTML='';
@@ -759,7 +759,7 @@ function deleteOrder(id){
   loadAdminOrders();
 }
 
-// ══ ADMIN ══
+
 function adminLogin(){
   const e = document.getElementById('adminEmail').value;
   const p = document.getElementById('adminPassword').value;
@@ -779,7 +779,7 @@ function showAdminTab(name,btn){
   if(name==='products') renderProductTable();
 }
 
-// ══ OVERLAYS ══
+
 function open_overlay(id){ document.getElementById(id).classList.add('open'); }
 function close_overlay(id){ document.getElementById(id).classList.remove('open'); }
 function openCart(){ renderCart(); open_overlay('cartOverlay'); }
@@ -795,27 +795,27 @@ function zoomImage(src){ document.getElementById('zoomedImage').src=src; open_ov
 function closeZoom(){ close_overlay('zoomOverlay'); }
 document.querySelectorAll('.overlay').forEach(ov=>{ ov.addEventListener('click',e=>{ if(e.target===ov) ov.classList.remove('open'); }); });
 
-// ══ SLIDESHOW ══
+
 function nextSlide(btn){ const ss=btn.parentElement,slides=ss.querySelectorAll('.slide'); let c=[...slides].findIndex(s=>s.classList.contains('active')); slides[c].classList.remove('active'); slides[(c+1)%slides.length].classList.add('active'); updateDots(ss,(c+1)%slides.length); }
 function prevSlide(btn){ const ss=btn.parentElement,slides=ss.querySelectorAll('.slide'); let c=[...slides].findIndex(s=>s.classList.contains('active')); slides[c].classList.remove('active'); slides[(c-1+slides.length)%slides.length].classList.add('active'); updateDots(ss,(c-1+slides.length)%slides.length); }
 function createDots(){ document.querySelectorAll('.slideshow').forEach(ss=>{ const slides=ss.querySelectorAll('.slide'),dc=ss.querySelector('.dots'); dc.innerHTML=''; slides.forEach((_,i)=>{ const d=document.createElement('span'); d.className='dot'+(i===0?' active':''); d.onclick=()=>{ slides.forEach(s=>s.classList.remove('active')); slides[i].classList.add('active'); updateDots(ss,i); }; dc.appendChild(d); }); }); }
 function updateDots(ss,idx){ ss.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx)); }
 
-// ══ TOAST ══
+
 function showToast(msg){ const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.opacity='0',2400); }
 
-// ══ PWA ══
+
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('installBanner').style.display='flex'; });
 function installApp(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{ deferredPrompt=null; document.getElementById('installBanner').style.display='none'; }); } }
 window.addEventListener('appinstalled',()=>{ document.getElementById('installBanner').style.display='none'; });
 
-// ══ INIT ══
+
 renderProducts();
 updateCartCount();
 updateLoginBtn();
 
-// ══ TYPEWRITER HERO ══
+
 (function(){
   const LINES   = ['STREET','PROFIT'];
   const titleEl = document.getElementById('heroTitle');
