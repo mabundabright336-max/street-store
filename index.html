@@ -11,65 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-<!-- ══ FIREBASE ══ -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-
-// ══════════════════════════════════════════════
-//  🔥 PASTE YOUR FIREBASE CONFIG HERE
-//  Go to: console.firebase.google.com
-//  → Your project → Project Settings → Your apps → Config
-// ══════════════════════════════════════════════
-const firebaseConfig = {
-  apiKey:            "AIzaSyAxLeOJb6r8EC_vmeKY77pWEwf-pCmC0LM",
-  authDomain:        "streetprofitcollections.firebaseapp.com",
-  databaseURL: "https://streetprofitcollections-default-rtdb.firebaseio.com",
-  projectId:         "streetprofitcollections",
-  storageBucket:     "streetprofitcollections.firebasestorage.app",
-  messagingSenderId: "305819463714",
-  appId:             "1:305819463714:web:f8c0b01867d07675ca1a7b",
-   measurementId: "G-6CZ96X879E"
-};
-
-const app  = initializeApp(firebaseConfig);
-const db   = getFirestore(app);
-const storage = getStorage(app);
-const auth = getAuth(app);
-
-// ── Expose to global scope so non-module functions can use them ──
-window._db = db;
-window._storage = storage;
-window._auth = auth;
-window._fb = { collection, doc, addDoc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, storageRef, uploadBytes, getDownloadURL, deleteObject, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile };
-
-// ── Live listener: products update on ALL devices instantly ──
-const prodQ = query(collection(db,'products'), orderBy('createdAt','asc'));
-onSnapshot(prodQ, snap => {
-  window._products = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-  if(typeof renderProducts === 'function') renderProducts();
-  if(typeof renderProductTable === 'function' && document.getElementById('adminPanel')?.classList.contains('open')) renderProductTable();
-});
-
-// ── Live listener: orders ──
-const ordQ = query(collection(db,'orders'), orderBy('createdAt','desc'));
-onSnapshot(ordQ, snap => {
-  window._orders = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-  if(typeof loadAdminOrders === 'function' && document.getElementById('adminPanel')?.classList.contains('open')) loadAdminOrders();
-  if(typeof loadCustomerOrders === 'function' && window._currentUser) loadCustomerOrders();
-});
-
-// ── Auth state listener ──
-onAuthStateChanged(auth, user => {
-  window._currentUser = user ? { uid:user.uid, email:user.email, displayName:user.displayName } : null;
-  if(typeof updateLoginBtn === 'function') updateLoginBtn();
-});
-
-window._firebaseReady = true;
-</script>
-
 <style>
 :root{
   --orange:#e96207;--dark:#0d0d0d;--card:#fff;--gray:#f5f5f5;
@@ -99,16 +40,29 @@ nav a:hover{color:#fff;}
 .hdr-btn{background:#111;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.85rem;transition:0.25s;font-family:'DM Sans',sans-serif;}
 .hdr-btn:hover{background:#333;}
 
+/* ── TYPEWRITER HERO ── */
 .hero{
   min-height:90vh;
   background:linear-gradient(150deg,rgba(0,0,0,0.75) 0%,rgba(100,98,96,0.35) 100%),url('Background-1.jpg') center/cover no-repeat;
   display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;padding-top:80px;
 }
-.hero-inner h1{font-size:clamp(3rem,8vw,6rem);color:#fff;line-height:0.95;margin-bottom:12px;}
+.hero-inner h1{font-size:clamp(3rem,8vw,6rem);color:#fff;line-height:0.95;margin-bottom:16px;min-height:2em;display:block;}
+.hero-cursor{
+  display:inline-block;width:4px;background:var(--orange);
+  margin-left:3px;border-radius:2px;vertical-align:baseline;
+  animation:cur-blink 0.7s step-end infinite;
+}
+@keyframes cur-blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.hero-inner .sub,
+.hero-inner .tagline,
+.hero-cta{opacity:0;transform:translateX(-28px);transition:opacity 0.55s ease,transform 0.55s ease;}
+.hero-inner .sub.revealed,
+.hero-inner .tagline.revealed,
+.hero-cta.revealed{opacity:1;transform:translateX(0);}
 .hero-inner .sub{color:#bdb9b7;font-size:1.1rem;font-weight:500;margin-bottom:8px;}
-.hero-inner p{color:rgba(255,255,255,0.7);font-size:0.95rem;margin-bottom:28px;}
-.hero-cta{display:inline-block;background:var(--orange);color:#fff;padding:14px 40px;border-radius:50px;font-weight:700;font-size:1rem;text-decoration:none;transition:0.3s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.hero-cta:hover{background:#c85300;transform:translateY(-2px);}
+.hero-inner .tagline{color:rgba(255,255,255,0.7);font-size:0.95rem;margin-bottom:28px;}
+.hero-cta{display:inline-block;background:var(--orange);color:#fff;padding:14px 40px;border-radius:50px;font-weight:700;font-size:1rem;text-decoration:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.55s ease,transform 0.55s ease,background 0.3s;}
+.hero-cta:hover{background:#c85300;}
 
 .section{padding:100px 5% 60px;}
 .section-title{font-size:2.4rem;margin-bottom:36px;color:var(--dark);}
@@ -152,7 +106,6 @@ nav a:hover{color:#fff;}
 .field input::placeholder{color:#555;}
 .modal-btn{width:100%;background:var(--orange);color:#fff;border:none;padding:13px;border-radius:10px;font-weight:700;font-size:0.95rem;cursor:pointer;transition:0.25s;font-family:'DM Sans',sans-serif;margin-top:4px;}
 .modal-btn:hover{background:#c85300;}
-.modal-btn:disabled{background:#666;cursor:not-allowed;}
 .modal-btn.secondary{background:#222;margin-top:8px;}
 .modal-btn.secondary:hover{background:#333;}
 .modal-btn.danger{background:var(--red);}
@@ -230,17 +183,10 @@ nav a:hover{color:#fff;}
 .edit-img-wrap img{width:100%;height:100%;object-fit:cover;border-radius:10px;border:2px solid rgba(255,255,255,0.12);}
 .edit-img-wrap.main-slot img{border-color:var(--orange);}
 .edit-img-wrap .main-label{position:absolute;bottom:0;left:0;right:0;background:var(--orange);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px;border-radius:0 0 8px 8px;}
-.edit-img-wrap .del-img{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;border:none;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.edit-img-wrap .del-img{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;border:none;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;}
 .add-img-tile{width:82px;height:82px;border:2px dashed rgba(255,255,255,0.2);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#666;font-size:1.4rem;transition:0.2s;background:#111;flex-shrink:0;}
 .add-img-tile:hover{border-color:var(--orange);color:var(--orange);}
 .add-img-tile span{font-size:0.65rem;margin-top:3px;}
-
-/* ── LOADING SPINNER ── */
-.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
-.loading-overlay.show{display:flex;}
-.loading-overlay p{color:#fff;font-size:1.1rem;font-weight:600;}
 
 #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:11px 24px;border-radius:30px;font-size:0.88rem;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;border:1px solid rgba(255,255,255,0.1);}
 #installBanner{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--orange);color:#fff;padding:13px 20px;z-index:4000;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;}
@@ -260,7 +206,6 @@ footer p{font-size:0.88rem;margin:4px 0;}
 .empty span{font-size:2.5rem;display:block;margin-bottom:12px;}
 
 @media(max-width:768px){
-  .hero-inner h1{font-size:3rem;}
   nav{display:none;}
   .products{grid-template-columns:repeat(2,1fr);gap:14px;}
   .slideshow{height:200px;}
@@ -278,12 +223,6 @@ footer p{font-size:0.88rem;margin:4px 0;}
 </head>
 <body>
 
-<!-- LOADING -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner" style="width:36px;height:36px;border-width:3px;"></div>
-  <p id="loadingMsg">Uploading images...</p>
-</div>
-
 <header>
   <div class="logo">STREET PROFIT COLLECTIONS</div>
   <nav>
@@ -300,18 +239,16 @@ footer p{font-size:0.88rem;margin:4px 0;}
 
 <section class="hero" id="home">
   <div class="hero-inner">
-    <h1>STREET<br>PROFIT</h1>
-    <p class="sub">KEEP HUSTLING</p>
-    <p>ACTIVATE YOUR FIT WEAR AMBITION</p>
-    <a href="#shop" class="hero-cta">Shop Now</a>
+    <h1 id="heroTitle"></h1>
+    <p class="sub" id="heroSub">KEEP HUSTLING</p>
+    <p class="tagline" id="heroTagline">ACTIVATE YOUR FIT WEAR AMBITION</p>
+    <a href="#shop" class="hero-cta" id="heroCta">Shop Now</a>
   </div>
 </section>
 
 <section class="section" id="shop">
   <h2 class="section-title">Our Products</h2>
-  <div class="products" id="productsContainer">
-    <div class="empty"><span>⏳</span>Loading products...</div>
-  </div>
+  <div class="products" id="productsContainer"></div>
 </section>
 
 <footer id="contact">
@@ -412,7 +349,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
   <div class="popup" style="max-width:520px;">
     <button class="close-x" onclick="closeEdit()">✕</button>
     <h2>Edit Product</h2>
-    <input type="hidden" id="editDocId">
+    <input type="hidden" id="editIndex">
     <div class="field"><label>Product Name</label><input type="text" id="editName" placeholder="Product Name"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
       <div class="field"><label>New Price (R)</label><input type="number" id="editPrice" placeholder="440"></div>
@@ -446,7 +383,6 @@ footer p{font-size:0.88rem;margin:4px 0;}
     <button class="admin-tab" style="margin-top:auto;color:var(--red);" onclick="closeAdmin()">✕ Close</button>
   </div>
   <div class="admin-main">
-    <!-- PRODUCTS TAB -->
     <div class="admin-pane active" id="pane-products">
       <div class="admin-head">
         <h2>All Products</h2>
@@ -459,7 +395,6 @@ footer p{font-size:0.88rem;margin:4px 0;}
         </table>
       </div>
     </div>
-    <!-- ADD PRODUCT TAB -->
     <div class="admin-pane" id="pane-add">
       <div class="admin-head"><h2>Add Product</h2></div>
       <div class="field"><label>Product Name</label><input type="text" id="newName" placeholder="e.g. Hustle Hoodie"></div>
@@ -491,7 +426,6 @@ footer p{font-size:0.88rem;margin:4px 0;}
       </div>
       <button class="modal-btn" id="addProductBtn" onclick="addProduct()">Add Product</button>
     </div>
-    <!-- ORDERS TAB -->
     <div class="admin-pane" id="pane-orders">
       <div class="admin-head"><h2>All Orders</h2></div>
       <div id="adminOrders"></div>
@@ -507,32 +441,41 @@ footer p{font-size:0.88rem;margin:4px 0;}
 <div id="toast"></div>
 
 <script>
-// ══ EmailJS ══
+// ══ EMAILJS ══
 const EMAILJS_PUBLIC_KEY  = 'DeXhysHa1MBcmF6-w';
 const EMAILJS_SERVICE_ID  = 'service_eai5wsd';
 const EMAILJS_TEMPLATE_ID = 'template_wrdjvme';
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
-// ── State (populated by Firebase listeners defined in module above) ──
-window._products = [];
-window._orders   = [];
-window._currentUser = null;
+// ══ STATE ══
 let cart = [];
+let users       = JSON.parse(localStorage.getItem('stp_users'))    || [];
+let orders      = JSON.parse(localStorage.getItem('stp_orders'))   || [];
+let currentUser = JSON.parse(localStorage.getItem('stp_user'))     || null;
+let uploadedImages = [];
 
-// ── Loading helpers ──
-function showLoading(msg){ document.getElementById('loadingOverlay').classList.add('show'); document.getElementById('loadingMsg').innerText = msg||'Loading...'; }
-function hideLoading(){ document.getElementById('loadingOverlay').classList.remove('show'); }
+const DEFAULT_PRODUCTS = [
+  {name:'Hustle T-shirt',       price:440, oldPrice:470, badge:'🔥 HOT DEAL',   images:['Hustle T-shirt.jpg','Hustle T-shirt-2.jpg']},
+  {name:'Caps',                 price:120, oldPrice:150, badge:'🔥 TRENDING',   images:['Cap_2.png','Cap-1.png']},
+  {name:'Hustle Tag T-shirt',   price:440, oldPrice:470, badge:'🆕 NEW ARRIVAL',images:['Hustle Tag t-shirt_1.png','Hustle Tag t-shirt_2.png']},
+  {name:'Graphic Hustle Tee',   price:440, oldPrice:470, badge:'',              images:['Graphic T-shirt-1.jpg']},
+  {name:'Hustle Hoodie',        price:440, oldPrice:470, badge:'',              images:['Hoodie_1.jpg','Hoodie_6.jpg','Hoodie_3.jpg']},
+  {name:'Hustle Tracksuit',     price:580, oldPrice:650, badge:'🆕 NEW ARRIVAL',images:['Tracksuit_3.jpg']},
+];
+let products = JSON.parse(localStorage.getItem('stp_products')) || DEFAULT_PRODUCTS;
+
+// ══ SAVE ══
+function saveProducts(){ localStorage.setItem('stp_products', JSON.stringify(products)); }
 
 // ══ RENDER PRODUCTS ══
 function renderProducts(){
   const c = document.getElementById('productsContainer');
   c.innerHTML = '';
-  const prods = window._products || [];
-  if(!prods.length){ c.innerHTML='<div class="empty"><span>📦</span>No products yet</div>'; return; }
-  prods.forEach(p => {
+  if(!products.length){ c.innerHTML='<div class="empty"><span>📦</span>No products yet</div>'; return; }
+  products.forEach((p,i) => {
     let pct = 0;
     if(p.oldPrice && p.oldPrice > p.price) pct = Math.round((p.oldPrice - p.price)/p.oldPrice*100);
-    const imgs = (p.images && p.images.length) ? p.images : [''];
+    const imgs = p.images.length ? p.images : [''];
     c.innerHTML += `
       <div class="card">
         <div class="slideshow">
@@ -549,21 +492,20 @@ function renderProducts(){
             ${p.oldPrice ? `<span class="old-price">R${p.oldPrice}</span>` : ''}
           </div>
           ${pct > 0 ? `<div class="save-pill">🏷️ YOU SAVE ${pct}% — R${p.oldPrice - p.price} OFF</div>` : ''}
-          <button class="btn" onclick="addToCart('${p.id}')">ADD TO CART</button>
+          <button class="btn" onclick="addToCart(${i})">ADD TO CART</button>
         </div>
       </div>`;
   });
   createDots();
 }
 
-
+// ══ PRODUCT TABLE ══
 function renderProductTable(){
   const body = document.getElementById('productTableBody');
   body.innerHTML = '';
-  const prods = window._products || [];
-  if(!prods.length){ body.innerHTML='<tr><td colspan="6" style="color:#555;text-align:center;padding:28px;">No products</td></tr>'; return; }
-  prods.forEach(p => {
-    const thumb = p.images?.[0] || '';
+  if(!products.length){ body.innerHTML='<tr><td colspan="6" style="color:#555;text-align:center;padding:28px;">No products</td></tr>'; return; }
+  products.forEach((p,i) => {
+    const thumb = p.images[0] || '';
     body.innerHTML += `
       <tr>
         <td>${thumb ? `<img src="${thumb}" class="prod-thumb">` : '—'}</td>
@@ -572,30 +514,18 @@ function renderProductTable(){
         <td style="color:#666;">${p.oldPrice ? 'R'+p.oldPrice : '—'}</td>
         <td>${p.badge || '—'}</td>
         <td><div class="tbl-actions">
-          <button class="tbl-btn edit" onclick="openEdit('${p.id}')">Edit</button>
-          <button class="tbl-btn del" onclick="deleteProduct('${p.id}')">Delete</button>
+          <button class="tbl-btn edit" onclick="openEdit(${i})">Edit</button>
+          <button class="tbl-btn del" onclick="deleteProduct(${i})">Delete</button>
         </div></td>
       </tr>`;
   });
 }
 
-
-async function uploadImageToStorage(file, path){
-  const { storageRef, uploadBytes, getDownloadURL } = window._fb;
-  const ref = storageRef(window._storage, path);
-  await uploadBytes(ref, file);
-  return await getDownloadURL(ref);
-}
-
-
-let uploadedFiles = []; 
-let uploadedPreviews = []; 
-
+// ══ ADD PRODUCT (image upload) ══
 function handleFiles(files){
   Array.from(files).forEach(file => {
-    uploadedFiles.push(file);
     const reader = new FileReader();
-    reader.onload = e => { uploadedPreviews.push(e.target.result); refreshPreview(); };
+    reader.onload = e => { uploadedImages.push(e.target.result); refreshPreview(); };
     reader.readAsDataURL(file);
   });
 }
@@ -607,70 +537,45 @@ function handleDrop(e){
 function refreshPreview(){
   const pre = document.getElementById('uploadPreview');
   pre.innerHTML = '';
-  uploadedPreviews.forEach((src,i) => {
+  uploadedImages.forEach((src,i) => {
     const img = document.createElement('img');
     img.src = src;
-    if(i===0) img.classList.add('main-img');
     img.title = i===0 ? 'Main image' : 'Click to remove';
-    img.onclick = () => {
-      if(i===0){ showToast('First image is the main photo'); return; }
-      uploadedFiles.splice(i,1);
-      uploadedPreviews.splice(i,1);
-      refreshPreview();
-    };
+    if(i===0) img.classList.add('main-img');
+    img.onclick = () => { if(i===0){ showToast('First image is the main photo'); return; } uploadedImages.splice(i,1); refreshPreview(); };
     pre.appendChild(img);
   });
 }
-
-async function addProduct(){
+function addProduct(){
   const name     = document.getElementById('newName').value.trim();
   const price    = parseInt(document.getElementById('newPrice').value);
   const oldPrice = parseInt(document.getElementById('newOldPrice').value) || null;
   const badge    = document.getElementById('newBadge').value;
   if(!name || !price){ showToast('Please enter name and price'); return; }
-  if(!uploadedFiles.length){ showToast('Please upload at least one image'); return; }
-
-  showLoading(`Uploading ${uploadedFiles.length} image(s)...`);
-  document.getElementById('addProductBtn').disabled = true;
-
-  try {
-    const { collection, addDoc, serverTimestamp } = window._fb;
-    const imageUrls = [];
-    for(let i=0; i<uploadedFiles.length; i++){
-      const url = await uploadImageToStorage(uploadedFiles[i], `products/${Date.now()}_${uploadedFiles[i].name}`);
-      imageUrls.push(url);
-    }
-    await addDoc(collection(window._db,'products'), { name, price, oldPrice, badge, images:imageUrls, createdAt:serverTimestamp() });
-    showToast('✅ Product added and live on all devices!');
-    // Reset
-    document.getElementById('newName').value='';
-    document.getElementById('newPrice').value='';
-    document.getElementById('newOldPrice').value='';
-    document.getElementById('newBadge').value='';
-    document.getElementById('imgInput').value='';
-    uploadedFiles=[];uploadedPreviews=[];refreshPreview();
-    showAdminTab('products', document.querySelectorAll('.admin-tab')[0]);
-  } catch(err){
-    showToast('Error: ' + err.message);
-  } finally {
-    hideLoading();
-    document.getElementById('addProductBtn').disabled = false;
-  }
+  if(!uploadedImages.length){ showToast('Please upload at least one image'); return; }
+  products.push({ name, price, oldPrice, badge, images:[...uploadedImages] });
+  saveProducts(); renderProducts(); renderProductTable();
+  document.getElementById('newName').value='';
+  document.getElementById('newPrice').value='';
+  document.getElementById('newOldPrice').value='';
+  document.getElementById('newBadge').value='';
+  document.getElementById('imgInput').value='';
+  uploadedImages=[]; refreshPreview();
+  showToast('✅ Product added!');
+  showAdminTab('products', document.querySelectorAll('.admin-tab')[0]);
 }
 
-
-let editImages = []; 
-let editNewFiles = []; 
-
+// ══ EDIT PRODUCT ══
+let editImages = [];
 function renderEditImgGrid(){
   const grid = document.getElementById('editImgGrid');
   grid.innerHTML = '';
   editImages.forEach((src,i) => {
     const wrap = document.createElement('div');
-    wrap.className = 'edit-img-wrap' + (i===0?' main-slot':'');
+    wrap.className = 'edit-img-wrap'+(i===0?' main-slot':'');
     wrap.innerHTML = `
       <img src="${src}" onclick="setEditMain(${i})" title="${i===0?'Main — click another to swap':'Click to make main'}">
-      ${i===0 ? '<div class="main-label">MAIN</div>' : ''}
+      ${i===0?'<div class="main-label">MAIN</div>':''}
       <button class="del-img" onclick="removeEditImg(${i})">✕</button>`;
     grid.appendChild(wrap);
   });
@@ -680,91 +585,58 @@ function renderEditImgGrid(){
   addTile.onclick = () => document.getElementById('editImgInput').click();
   grid.appendChild(addTile);
 }
-function setEditMain(i){ if(i===0)return; const [img]=editImages.splice(i,1); editImages.unshift(img); renderEditImgGrid(); }
+function setEditMain(i){ if(i===0)return; const [img]=editImages.splice(i,1); editImages.unshift(img); renderEditImgGrid(); showToast('Main photo updated'); }
 function removeEditImg(i){ if(editImages.length===1){showToast('Must have at least one image');return;} editImages.splice(i,1); renderEditImgGrid(); }
 function editAddFiles(files){
   Array.from(files).forEach(file => {
-    editNewFiles.push(file);
     const reader = new FileReader();
     reader.onload = e => { editImages.push(e.target.result); renderEditImgGrid(); };
     reader.readAsDataURL(file);
   });
   document.getElementById('editImgInput').value='';
 }
-
-function openEdit(docId){
-  const p = (window._products||[]).find(x=>x.id===docId);
-  if(!p) return;
-  document.getElementById('editDocId').value = docId;
+function openEdit(i){
+  const p = products[i];
+  document.getElementById('editIndex').value = i;
   document.getElementById('editName').value = p.name;
   document.getElementById('editPrice').value = p.price;
   document.getElementById('editOldPrice').value = p.oldPrice||'';
   document.getElementById('editBadge').value = p.badge||'';
   editImages = [...(p.images||[])];
-  editNewFiles = [];
   renderEditImgGrid();
   open_overlay('editOverlay');
 }
-
-async function saveEdit(){
-  const docId = document.getElementById('editDocId').value;
+function saveEdit(){
+  const i     = parseInt(document.getElementById('editIndex').value);
   const name  = document.getElementById('editName').value.trim();
   const price = parseInt(document.getElementById('editPrice').value);
   const oldP  = parseInt(document.getElementById('editOldPrice').value)||null;
   const badge = document.getElementById('editBadge').value;
   if(!name||!price){showToast('Name and price required');return;}
   if(!editImages.length){showToast('Keep at least one image');return;}
-
-  showLoading('Saving product...');
-  try {
-    const { doc, updateDoc, serverTimestamp } = window._fb;
-    
-    const finalUrls = [];
-    let newFileIdx = 0;
-    for(const src of editImages){
-      if(src.startsWith('data:')){
-        // It's a new upload
-        const url = await uploadImageToStorage(editNewFiles[newFileIdx], `products/${Date.now()}_${editNewFiles[newFileIdx].name}`);
-        finalUrls.push(url);
-        newFileIdx++;
-      } else {
-        finalUrls.push(src); 
-      }
-    }
-    await updateDoc(doc(window._db,'products',docId), { name, price, oldPrice:oldP, badge, images:finalUrls, updatedAt:serverTimestamp() });
-    close_overlay('editOverlay');
-    showToast('✅ Product updated on all devices!');
-  } catch(err){
-    showToast('Error: '+err.message);
-  } finally {
-    hideLoading();
-  }
+  products[i] = {...products[i], name, price, oldPrice:oldP, badge, images:[...editImages]};
+  saveProducts(); renderProducts(); renderProductTable();
+  close_overlay('editOverlay');
+  showToast('✅ Product updated');
 }
 function closeEdit(){ close_overlay('editOverlay'); }
 
-async function deleteProduct(docId){
-  const p = (window._products||[]).find(x=>x.id===docId);
-  if(!confirm(`Delete "${p?.name}"?`)) return;
-  try {
-    const { doc, deleteDoc } = window._fb;
-    await deleteDoc(doc(window._db,'products',docId));
-    showToast('Product deleted');
-  } catch(err){ showToast('Error: '+err.message); }
+function deleteProduct(i){
+  if(!confirm(`Delete "${products[i].name}"?`)) return;
+  products.splice(i,1); saveProducts(); renderProducts(); renderProductTable();
+  showToast('Product deleted');
 }
 
-
-function addToCart(productId){
-  const p = (window._products||[]).find(x=>x.id===productId);
-  if(!p) return;
-  cart.push({ name:p.name, price:p.price, image:p.images?.[0]||'' });
-  updateCartCount();
-  showToast(`${p.name} added 🛒`);
+// ══ CART ══
+function addToCart(i){
+  const p = products[i];
+  cart.push({name:p.name, price:p.price, image:p.images[0]||''});
+  updateCartCount(); showToast(`${p.name} added 🛒`);
 }
 function updateCartCount(){ document.getElementById('cartCount').innerText = cart.length; }
 function renderCart(){
   const c = document.getElementById('cartItems');
-  c.innerHTML='';
-  let total=0;
+  c.innerHTML=''; let total=0;
   if(!cart.length){ c.innerHTML='<div class="empty"><span>🛒</span>Your cart is empty</div>'; document.getElementById('cartTotal').innerText='R0'; return; }
   cart.forEach((item,i)=>{
     total+=item.price;
@@ -775,85 +647,81 @@ function renderCart(){
 function removeItem(i){ cart.splice(i,1); updateCartCount(); renderCart(); }
 function showBankDetails(){ document.getElementById('bankDetails').style.display = document.getElementById('paymentMethod').value==='Bank Transfer'?'block':'none'; }
 
-
+// ══ CHECKOUT ══
 async function checkout(){
-  if(!window._currentUser){ showToast('Please login first'); closeCart(); openAuth(); return; }
+  if(!currentUser){ showToast('Please login first'); closeCart(); openAuth(); return; }
   if(!cart.length){ showToast('Cart is empty'); return; }
   const address = document.getElementById('checkoutAddress').value.trim();
   const payment = document.getElementById('paymentMethod').value;
   if(!address){ showToast('Please enter delivery address'); return; }
 
-  const orderNum = 'STP' + Date.now().toString().slice(-6);
-  const order = { orderNum, user:window._currentUser.email, phone:window._currentUser.displayName||'', items:[...cart], address, payment, status:'Pending', date:new Date().toLocaleDateString('en-ZA') };
+  const orderNum = 'SPC' + Date.now().toString().slice(-6);
+  const order = { id:Date.now(), orderNum, user:currentUser.email, phone:currentUser.phone||'', items:[...cart], address, payment, status:'Pending', date:new Date().toLocaleDateString('en-ZA') };
+  orders.push(order);
+  localStorage.setItem('stp_orders', JSON.stringify(orders));
 
-  showLoading('Placing order...');
   try {
-    const { collection, addDoc, serverTimestamp } = window._fb;
-    await addDoc(collection(window._db,'orders'), { ...order, createdAt:serverTimestamp() });
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: currentUser.email,
+      to_name:  currentUser.email.split('@')[0],
+      order_num: orderNum,
+      items: cart.map(i=>`${i.name} — R${i.price}`).join('\n'),
+      total: 'R' + cart.reduce((s,i)=>s+i.price,0),
+      address, payment
+    });
+  } catch(e){}
 
-    
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_email: window._currentUser.email,
-        to_name:  window._currentUser.email.split('@')[0],
-        order_num: orderNum,
-        items: cart.map(i=>`${i.name} — R${i.price}`).join('\n'),
-        total: 'R' + cart.reduce((s,i)=>s+i.price,0),
-        address, payment
-      });
-    } catch(e){}
+  const itemsMsg = cart.map(i=>`${i.name} - R${i.price}`).join('%0A');
+  window.open(`https://wa.me/27730891813?text=🔥 NEW ORDER%0AOrder: ${orderNum}%0ACustomer: ${currentUser.email}%0APhone: ${order.phone}%0AAddress: ${address}%0APayment: ${payment}%0A%0AItems:%0A${itemsMsg}`, '_blank');
 
-    
-    const itemsMsg = cart.map(i=>`${i.name} - R${i.price}`).join('%0A');
-    window.open(`https://wa.me/27661533822?text=🔥 NEW ORDER%0AOrder: ${orderNum}%0ACustomer: ${window._currentUser.email}%0AAddress: ${address}%0APayment: ${payment}%0A%0AItems:%0A${itemsMsg}`, '_blank');
-
-    cart=[]; updateCartCount(); closeCart();
-    document.getElementById('successOrderNum').innerText = orderNum;
-    open_overlay('successOverlay');
-  } catch(err){ showToast('Order failed: '+err.message); }
-  finally{ hideLoading(); }
+  cart=[]; updateCartCount(); closeCart();
+  document.getElementById('successOrderNum').innerText = orderNum;
+  open_overlay('successOverlay');
+  loadCustomerOrders(); loadAdminOrders();
 }
 
-
-async function signup(){
+// ══ AUTH ══
+function signup(){
   const email    = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
   const phone    = document.getElementById('authPhone').value.trim();
-  if(!email||!password){showToast('Email and password required');return;}
-  try {
-    const { createUserWithEmailAndPassword, updateProfile } = window._fb;
-    const cred = await createUserWithEmailAndPassword(window._auth, email, password);
-    
-    await updateProfile(cred.user, { displayName: phone });
-    closeAuth(); showToast('Account created! Welcome 🎉');
-  } catch(err){ showToast(err.message.replace('Firebase:','').replace(/\(auth.*\)/,'').trim()); }
+  if(!email||!password){ showToast('Email and password required'); return; }
+  if(users.find(u=>u.email===email)){ showToast('Account already exists — please login'); return; }
+  const user = {email, password, phone};
+  users.push(user);
+  localStorage.setItem('stp_users', JSON.stringify(users));
+  currentUser = user;
+  localStorage.setItem('stp_user', JSON.stringify(user));
+  closeAuth(); updateLoginBtn(); showToast('Account created! Welcome 🎉');
 }
-async function login(){
+function login(){
   const email    = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
-  try {
-    const { signInWithEmailAndPassword } = window._fb;
-    await signInWithEmailAndPassword(window._auth, email, password);
-    closeAuth(); showToast('Welcome back! 👋');
-  } catch(err){ showToast('Invalid email or password'); }
+  const user = users.find(u=>u.email===email && u.password===password);
+  if(!user){ showToast('Invalid email or password'); return; }
+  currentUser = user;
+  localStorage.setItem('stp_user', JSON.stringify(user));
+  closeAuth(); updateLoginBtn(); showToast('Welcome back! 👋');
 }
-async function logout(){
-  const { signOut } = window._fb;
-  await signOut(window._auth);
-  close_overlay('accountOverlay'); showToast('Logged out');
+function logout(){
+  currentUser = null;
+  localStorage.removeItem('stp_user');
+  close_overlay('accountOverlay'); updateLoginBtn(); showToast('Logged out');
 }
 function updateLoginBtn(){
   const btn = document.getElementById('loginBtn');
-  if(window._currentUser){ btn.textContent='My Account'; btn.onclick=openAccount; }
+  if(currentUser){ btn.textContent='My Account'; btn.onclick=openAccount; }
   else { btn.textContent='Login'; btn.onclick=openAuth; }
 }
 
+// ══ ORDERS ══
 function loadCustomerOrders(){
   const c = document.getElementById('customerOrders');
   c.innerHTML='';
-  const mine = (window._orders||[]).filter(o=>o.user===window._currentUser?.email);
+  if(!currentUser){ c.innerHTML='<p style="color:#555;">Please login</p>'; return; }
+  const mine = orders.filter(o=>o.user===currentUser.email);
   if(!mine.length){ c.innerHTML='<div class="empty"><span>📋</span>No orders yet</div>'; return; }
-  mine.forEach(o=>{
+  [...mine].reverse().forEach(o=>{
     const sc = o.status==='Delivered'?'delivered':o.status==='Shipped'?'shipped':'pending';
     c.innerHTML+=`<div class="order-card"><h4>Order ${o.orderNum}</h4><p>Date: ${o.date||'—'}</p><p>Payment: ${o.payment}</p><p style="margin-top:4px;">Status: <span class="status ${sc}">${o.status}</span></p></div>`;
   });
@@ -861,9 +729,8 @@ function loadCustomerOrders(){
 function loadAdminOrders(){
   const c = document.getElementById('adminOrders');
   c.innerHTML='';
-  const all = window._orders||[];
-  if(!all.length){ c.innerHTML='<div class="empty"><span>📋</span>No orders yet</div>'; return; }
-  all.forEach(o=>{
+  if(!orders.length){ c.innerHTML='<div class="empty"><span>📋</span>No orders yet</div>'; return; }
+  [...orders].reverse().forEach(o=>{
     const sc = o.status==='Delivered'?'delivered':o.status==='Shipped'?'shipped':'pending';
     c.innerHTML+=`
       <div class="order-card">
@@ -871,24 +738,25 @@ function loadAdminOrders(){
         <p>Phone: ${o.phone||'—'}</p>
         <p>Address: ${o.address}</p>
         <p>Payment: ${o.payment}</p>
-        <p>Items: ${(o.items||[]).map(i=>i.name).join(', ')}</p>
-        <p>Total: <strong style="color:var(--orange);">R${(o.items||[]).reduce((s,i)=>s+i.price,0)}</strong></p>
+        <p>Items: ${o.items.map(i=>i.name).join(', ')}</p>
+        <p>Total: <strong style="color:var(--orange);">R${o.items.reduce((s,i)=>s+i.price,0)}</strong></p>
         <p>Status: <span class="status ${sc}">${o.status}</span></p>
         <div class="order-actions">
-          <button class="o-btn ship" onclick="updateOrder('${o.id}','Shipped')">Ship</button>
-          <button class="o-btn deliver" onclick="updateOrder('${o.id}','Delivered')">Deliver</button>
-          <button class="o-btn del" onclick="deleteOrder('${o.id}')">Delete</button>
+          <button class="o-btn ship" onclick="updateOrder(${o.id},'Shipped')">Ship</button>
+          <button class="o-btn deliver" onclick="updateOrder(${o.id},'Delivered')">Deliver</button>
+          <button class="o-btn del" onclick="deleteOrder(${o.id})">Delete</button>
         </div>
       </div>`;
   });
 }
-async function updateOrder(id,status){
-  try { const { doc, updateDoc } = window._fb; await updateDoc(doc(window._db,'orders',id),{status}); }
-  catch(e){ showToast('Error: '+e.message); }
+function updateOrder(id,status){
+  const o = orders.find(x=>x.id===id);
+  if(o){ o.status=status; localStorage.setItem('stp_orders',JSON.stringify(orders)); loadAdminOrders(); loadCustomerOrders(); }
 }
-async function deleteOrder(id){
-  try { const { doc, deleteDoc } = window._fb; await deleteDoc(doc(window._db,'orders',id)); }
-  catch(e){ showToast('Error: '+e.message); }
+function deleteOrder(id){
+  orders=orders.filter(x=>x.id!==id);
+  localStorage.setItem('stp_orders',JSON.stringify(orders));
+  loadAdminOrders();
 }
 
 // ══ ADMIN ══
@@ -925,10 +793,7 @@ function closeAdminLogin(){ close_overlay('adminLoginOverlay'); }
 function closeSuccess(){ close_overlay('successOverlay'); }
 function zoomImage(src){ document.getElementById('zoomedImage').src=src; open_overlay('zoomOverlay'); }
 function closeZoom(){ close_overlay('zoomOverlay'); }
-
-document.querySelectorAll('.overlay').forEach(ov=>{
-  ov.addEventListener('click',e=>{ if(e.target===ov) ov.classList.remove('open'); });
-});
+document.querySelectorAll('.overlay').forEach(ov=>{ ov.addEventListener('click',e=>{ if(e.target===ov) ov.classList.remove('open'); }); });
 
 // ══ SLIDESHOW ══
 function nextSlide(btn){ const ss=btn.parentElement,slides=ss.querySelectorAll('.slide'); let c=[...slides].findIndex(s=>s.classList.contains('active')); slides[c].classList.remove('active'); slides[(c+1)%slides.length].classList.add('active'); updateDots(ss,(c+1)%slides.length); }
@@ -937,7 +802,7 @@ function createDots(){ document.querySelectorAll('.slideshow').forEach(ss=>{ con
 function updateDots(ss,idx){ ss.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx)); }
 
 // ══ TOAST ══
-function showToast(msg){ const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.opacity='0',2800); }
+function showToast(msg){ const t=document.getElementById('toast'); t.innerText=msg; t.style.opacity='1'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.opacity='0',2400); }
 
 // ══ PWA ══
 let deferredPrompt=null;
@@ -945,7 +810,54 @@ window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredP
 function installApp(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{ deferredPrompt=null; document.getElementById('installBanner').style.display='none'; }); } }
 window.addEventListener('appinstalled',()=>{ document.getElementById('installBanner').style.display='none'; });
 
+// ══ INIT ══
+renderProducts();
 updateCartCount();
+updateLoginBtn();
+
+// ══ TYPEWRITER HERO ══
+(function(){
+  const LINES   = ['STREET','PROFIT'];
+  const titleEl = document.getElementById('heroTitle');
+  const subEl   = document.getElementById('heroSub');
+  const tagEl   = document.getElementById('heroTagline');
+  const ctaEl   = document.getElementById('heroCta');
+
+  const cursor = document.createElement('span');
+  cursor.className = 'hero-cursor';
+  cursor.style.height = '0.82em';
+
+  let li=0, ci=0;
+  const nodes=[];
+
+  function tick(){
+    const word = LINES[li];
+    if(ci===0){
+      if(li>0) titleEl.appendChild(document.createElement('br'));
+      nodes[li]=document.createTextNode('');
+      titleEl.appendChild(nodes[li]);
+    }
+    if(ci<word.length){
+      nodes[li].nodeValue+=word[ci++];
+      if(cursor.parentNode) cursor.remove();
+      titleEl.appendChild(cursor);
+      setTimeout(tick, 80+Math.random()*65);
+    } else {
+      li++; ci=0;
+      if(li<LINES.length){ setTimeout(tick,260); }
+      else {
+        setTimeout(()=>{
+          cursor.style.animation='none';
+          cursor.style.opacity='0';
+          setTimeout(()=>subEl.classList.add('revealed'),  120);
+          setTimeout(()=>tagEl.classList.add('revealed'),  370);
+          setTimeout(()=>ctaEl.classList.add('revealed'),  650);
+        },480);
+      }
+    }
+  }
+  setTimeout(tick,380);
+})();
 </script>
 </body>
 </html>
