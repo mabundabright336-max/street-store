@@ -219,6 +219,8 @@ footer p{font-size:0.88rem;margin:4px 0;}
   .prod-table th:nth-child(3),.prod-table td:nth-child(3){display:none;}
 }
 @media(max-width:400px){.products{grid-template-columns:1fr;}}
+
+.password-field{position:relative;display:flex;align-items:center;margin-top:10px}.password-field input{width:100%;padding-right:48px}.password-eye{position:absolute;right:8px;border:0;background:transparent;cursor:pointer;font-size:18px;padding:6px}.show-password{display:flex;align-items:center;gap:7px;font-size:13px;margin:8px 0 4px;cursor:pointer}.show-password input{width:auto}.signup-only{display:none}
 </style>
 </head>
 <body>
@@ -254,7 +256,7 @@ footer p{font-size:0.88rem;margin:4px 0;}
 <footer id="contact">
   <div class="ft-logo">S.T.P.CO</div>
   <p>younggouttytrading@gmail.com</p>
-  <p>WhatsApp: +27 73 089 1813</p>
+  <p>WhatsApp: +27 62 153 3822</p>
   <p>streetprofit.co.za</p>
   <p style="margin-top:12px;font-size:0.8rem;">Fast & reliable delivery across South Africa 🇿🇦</p>
   <p style="margin-top:12px;font-size:0.75rem;color:#aaa;">Web by <a href="https://wa.me/27730891813" style="color:var(--orange);text-decoration:none;font-weight:600;">Bright (+27 73 089 1813)</a></p>
@@ -300,8 +302,10 @@ footer p{font-size:0.88rem;margin:4px 0;}
     <button class="close-x" onclick="closeAuth()">✕</button>
     <h2>Customer Account</h2>
     <div class="field"><label>Email Address</label><input type="email" id="authEmail" placeholder="you@email.com"></div>
-    <div class="field"><label>Password</label><input type="password" id="authPassword" placeholder="••••••••"></div>
-    <div class="field"><label>Phone Number</label><input type="tel" id="authPhone" placeholder="+27 66 153 3822"></div>
+    <div class="field"><label>Password</label><input type="password" id="authPassword" placeholder="••••••••">
+        <div class="password-field signup-only"><input id="authConfirmPassword" type="password" placeholder="Confirm password" autocomplete="new-password"><button type="button" class="password-eye" onclick="togglePasswordField('authConfirmPassword',this)" aria-label="Show or hide confirm password">👁</button></div>
+        <label class="show-password signup-only"><input type="checkbox" id="showSignupPasswords" onchange="toggleSignupPasswords(this)"> Show passwords</label></div>
+    <div class="field"><label>Phone Number</label><input type="tel" id="authPhone" placeholder="+27 * * * * *"></div>
     <button class="modal-btn" onclick="signup()">Create Account</button>
     <button class="modal-btn secondary" onclick="login()">Login</button>
   </div>
@@ -338,8 +342,8 @@ footer p{font-size:0.88rem;margin:4px 0;}
   <div class="popup" style="max-width:400px;">
     <button class="close-x" onclick="closeAdminLogin()">✕</button>
     <h2>Admin Access</h2>
-    <div class="field"><label>Email</label><input type="email" id="adminEmail" placeholder="younggouttytrading@gmail.com"></div>
-    <div class="field"><label>Password</label><input type="password" id="adminPassword" placeholder="LyonLeg@cy"></div>
+    <div class="field"><label>Email</label><input type="email" id="adminEmail" placeholder="admin email"></div>
+    <div class="field"><label>Password</label><input type="password" id="adminPassword" placeholder="*********"></div>
     <button class="modal-btn" onclick="adminLogin()">Access Dashboard</button>
   </div>
 </div>
@@ -644,14 +648,18 @@ function cartTotal(){return cart.reduce((s,i)=>s+Number(i.price)*(i.quantity||1)
 
 /* ---------- AUTH ---------- */
 async function signup(){
-  const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value,phone=document.getElementById('authPhone').value.trim();
-  if(!email||!password){showToast('Email and password required');return;}
+  const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value,confirmPassword=document.getElementById('authConfirmPassword').value,phone=document.getElementById('authPhone').value.trim();
+  if(!email||!password||!confirmPassword){showToast('Email, password and password confirmation are required');return;}
+  if(password!==confirmPassword){showToast('Passwords do not match');return;}
   if(password.length<6){showToast('Password must be at least 6 characters');return;}
   const {data,error}=await db.auth.signUp({email,password,options:{data:{phone}}});
   if(error){showToast(error.message);return;}
   if(data.user&&!data.session){showToast('Account created. Check your email to confirm your account.');return;}
   closeAuth(); await refreshAuth(); showToast('Account created! Welcome 🎉');
 }
+function togglePasswordField(id,button){const input=document.getElementById(id);if(!input)return;input.type=input.type==='password'?'text':'password';button.textContent=input.type==='password'?'👁':'🙈';}
+function toggleSignupPasswords(cb){['authPassword','authConfirmPassword'].forEach(id=>{const input=document.getElementById(id);if(input)input.type=cb.checked?'text':'password';});document.querySelectorAll('.password-eye').forEach(b=>b.textContent=cb.checked?'🙈':'👁');}
+
 async function login(){
   const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;
   if(!email||!password){showToast('Email and password required');return;}
@@ -715,7 +723,8 @@ function showAdminTab(name,btn){document.querySelectorAll('.admin-pane').forEach
 /* ---------- UI ---------- */
 function openCart(){renderCart();open_overlay('cartOverlay');}
 function closeCart(){close_overlay('cartOverlay');}
-function openAuth(){open_overlay('authOverlay');}
+function setSignupFieldsVisible(show){document.querySelectorAll('.signup-only').forEach(el=>el.style.display=show?(el.tagName==='LABEL'?'flex':'flex'):'none');}
+function openAuth(){open_overlay('authOverlay');setSignupFieldsVisible(true);}
 function closeAuth(){close_overlay('authOverlay');}
 function openAccount(){loadCustomerOrders();open_overlay('accountOverlay');}
 function closeAccount(){close_overlay('accountOverlay');}
